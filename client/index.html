@@ -6,26 +6,87 @@
 <body>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io('0.0.0.0:3000', {transports: ['websocket'], upgrade: false});
 
-    let x = 0;
+    let currentUser = null;
+
+    const Users = {
+      'A': {
+        id: 1,
+        nick: 'mati'
+      },
+      'B': {
+        id: 2,
+        nick: 'kondi'
+      },
+      'C': {
+        id: 3,
+        nick: 'andi'
+      },
+    };
+    const Subjects = {
+      all: { id: 1, name: 'all' },
+      polski: { id: 2, name: 'polski' },
+      matematyka: { id: 3, name: 'matematyka' },
+      fizyka: { id: 4, name: 'fizyka' }
+    };
+    const socket = io('0.0.0.0:3000', {transports: ['websocket'], upgrade: false});
 
     socket.on('connect', () => {
       console.log('client connected');
-
-      socket.emit('event', x);
     });
 
-    socket.on('event', (data) => {
-      x++;
-      console.log('event', data);
-      setTimeout(() => socket.emit('event', x), 1000);
+    socket.on('moj-kanal-komunikacji', (data) => {
+      
+      switch(data.action) {
+        case 'authorized':
+          console.log('authorized to the server');
+          switchChannel(Subjects.all);
+          break;
+        case 'logged-in-users':
+          console.log('logged in users:', data.payload);
+          break;
+
+        case 'user-has-left':
+          console.log('user left channel:', data.payload);
+          break;
+
+        default:
+          console.log('other event', data)
+      }
     });
 
     socket.on('disconnect', () => {
       console.log('disconnected');
     });
 
+
+    function getAuthObject(id) {
+      return Users[id];
+    }
+
+    function authorize(id) {
+      socket.emit('moj-kanal-komunikacji', {
+        action: 'authorize',
+        payload: getAuthObject(id)
+      });
+
+      currentUser = getAuthObject(id);
+    }
+
+    function switchChannel(channel) {
+      socket.emit('moj-kanal-komunikacji', {
+        action: 'switch-channel',
+        payload: channel.name,
+        userId: currentUser.id
+      });
+    }
+
+    function whoIsLoggedIn() {
+      socket.emit('moj-kanal-komunikacji', {
+        action: 'get-logged-in-users',
+        userId: currentUser.id
+      });
+    }
 
   </script>
 </body>
