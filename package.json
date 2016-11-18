@@ -1,0 +1,24 @@
+{
+  "name": "warm-socks-for-toddlers",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "server/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vergilius/warm-socks-for-toddlers.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vergilius/warm-socks-for-toddlers/issues"
+  },
+  "homepage": "https://github.com/vergilius/warm-socks-for-toddlers#readme",
+  "devDependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.5.1"
+  }
+}
